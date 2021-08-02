@@ -1,0 +1,14 @@
+[
+    {
+        "id": "001",
+        "name": "Srishti Organogram",
+        "lang": "en",
+        "url": "./data/001.json"
+    },
+    {
+        "id": "002",
+        "name": "Fields of Mathematics",
+        "lang": "en",
+        "url": "./data/002.json"
+    }
+]
