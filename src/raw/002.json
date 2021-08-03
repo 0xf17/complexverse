@@ -1,0 +1,137 @@
+{
+    "meta": {
+        "name" : "Fields of Mathematics",
+        "lang"  : "en",
+        "description" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas in pharetra velit, a ornare augue. Curabitur condimentum, dolor nec malesuada dignissim, libero felis tincidunt orci, porta imperdiet nulla erat sed magna. Morbi sem arcu, condimentum sit amet elit quis, iaculis imperdiet justo. Sed nec porttitor urna, ac accumsan augue. Nunc vehicula est at elementum sagittis. Etiam velit risus, pellentesque eu aliquam nec, consectetur sit amet turpis. Vivamus semper ullamcorper mi et sodales. Mauris ultrices tellus augue, sed lacinia libero tincidunt quis. Sed tempus mollis justo ac porta. Etiam pretium quis elit at auctor. Nulla mattis, ligula ut utrum pulvinar, ligula massa semper nisi, sed aliquam tortor tellus eget sem.",
+        "sourceLinks" : [ 
+            { "title": "Wikipedia", "url": "https://en.wikipedia.org/wiki/Mathematics" }
+        ],
+        "contributedBy": [
+            "0xf17"
+        ],
+        "dataSource": "#",
+        "editLink": "#"
+    },
+    "graph": {
+        "nodes": [
+
+            { "id": -1, "name": "Philosophy" },
+            { "id": -1.1, "name": "Assumptions" },
+            { "id": -1.2, "name": "Implications" },
+
+            { "id": 0, "name": "Foundations" },
+            { "id": 0.1, "name": "Mathematical Logic" },
+            { "id": 0.2, "name": "Set Theory" },
+
+            { "id": 1, "name": "Pure Mathematics" },
+            { "id": 1.1, "name": "Number Systems" },
+            { "id": 1.2, "name": "Number Theory" },
+            { "id": 1.3, "name": "Structure" },
+            { "id": 1.4, "name": "Space" },
+            { "id": 1.5, "name": "Change" },
+
+            { "id": 2, "name": "Applied Mathematics" },
+            { "id": 2.1, "name": "Statistics" },
+            { "id": 2.2, "name": "Decision Sciences" },
+            { "id": 2.3, "name": "Computational Mathematics" },
+
+            { "id": 2.31, "name": "Game Theory" },
+            { "id": 2.32, "name": "Fluid Dynamics" },
+            { "id": 2.33, "name": "Numerical Analysis" },
+            { "id": 2.34, "name": "Optimization" },
+            { "id": 2.35, "name": "Probability Theory" },
+            { "id": 2.36, "name": "Cryptography" },
+            { "id": 2.37, "name": "Mathematical Finance" },
+            { "id": 2.38, "name": "Mathematical Physics" },
+            { "id": 2.39, "name": "Mathematical Chemistry" },
+            { "id": 2.40, "name": "Mathematical Biology" },
+            { "id": 2.41, "name": "Mathematical Economics" },
+            { "id": 2.42, "name": "Control Theory" },
+
+            { "id": 3, "name": "Themes" },
+            { "id": 3.1, "name": "Mathematical Realism" },
+            { "id": 3.2, "name": "Mathematical Anti-Realism" },
+            { "id": 3.11, "name": "Platonism" },
+            { "id": 3.12, "name": "Aristotelianism" },
+
+            { "id": 3.111, "name": "Mathematical Platonism" },
+            { "id": 3.112, "name": "Full-blooded Platonism" },
+            { "id": 3.113, "name": "Set-theoretic Platonism" },
+
+            { "id": 4, "name": "Schools of Thought" },
+            { "id": 4.1, "name": "Contemporary" },
+            { "id": 4.11, "name": "Artistic" },
+            { "id": 4.12, "name": "Mathematicism" },
+            { "id": 4.13, "name": "Logicism" },
+            { "id": 4.14, "name": "Formalism" },
+            { "id": 4.15, "name": "Conventionalism" },
+            { "id": 4.16, "name": "Intuitionism" },
+            { "id": 4.161, "name": "Constructivism" },
+            { "id": 4.162, "name": "Finitism" },
+            { "id": 4.17, "name": "Structuralism" },
+            { "id": 4.18, "name": "Embodied Mind" },
+            { "id": 4.181, "name": "Psychologism" },
+            { "id": 4.182, "name": "Empiricism" }
+        ],
+        "links": [
+            { "source": -1, "target": 0 },
+            { "source": -1, "target": -1.1 },
+            { "source": -1, "target": -1.2 },
+
+            { "source": 0, "target": 0.1 },
+            { "source": 0, "target": 0.2 },
+
+            { "source": 1, "target": 1.1 },
+            { "source": 1.1, "target": 1.2 },
+            { "source": 1, "target": 1.2 },
+            { "source": 1, "target": 1.3 },
+            { "source": 1, "target": 1.4 },
+            { "source": 1, "target": 1.5 },
+
+            { "source": 2, "target": 2.1 },
+            { "source": 2.1, "target": 2.2 },
+            { "source": 2, "target": 2.2 },
+            { "source": 2, "target": 2.3 },
+            { "source": 2.1, "target": 2.3 },
+
+            { "source": 2.3, "target": 2.31 },
+            { "source": 2.3, "target": 2.32 },
+            { "source": 2.3, "target": 2.33 },
+            { "source": 2.3, "target": 2.34 },
+            { "source": 2.3, "target": 2.35 },
+            { "source": 2.3, "target": 2.36 },
+            { "source": 2.3, "target": 2.37 },
+            { "source": 2.3, "target": 2.38 },
+            { "source": 2.3, "target": 2.39 },
+            { "source": 2.3, "target": 2.40 },
+            { "source": 2.3, "target": 2.41 },
+            { "source": 2.3, "target": 2.42 },
+
+            { "source": 3, "target": 3.1 },
+            { "source": 3, "target": 3.2 },
+            { "source": 3.1, "target": 3.11 },
+            { "source": 3.1, "target": 3.12 },
+
+            { "source": 4, "target": 4.1 },
+            { "source": 4.1, "target": 4.11 },
+            { "source": 4.1, "target": 3.11 },
+
+            { "source": 3.11, "target": 3.111 },
+            { "source": 3.11, "target": 3.112 },
+            { "source": 3.11, "target": 3.113 },
+
+            { "source": 4.1, "target": 4.12 },
+            { "source": 4.1, "target": 4.13 },
+            { "source": 4.1, "target": 4.14 },
+            { "source": 4.1, "target": 4.15 },
+            { "source": 4.1, "target": 4.16 },
+            { "source": 4.16, "target": 4.161 },
+            { "source": 4.16, "target": 4.162 },
+            { "source": 4.1, "target": 4.17 },
+            { "source": 4.1, "target": 4.18 },
+            { "source": 4.18, "target": 4.181 },
+            { "source": 4.18, "target": 4.182 }
+
+        ]
+    }
+}

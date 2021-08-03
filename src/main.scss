@@ -170,44 +170,45 @@ body {
         position: absolute;
         width: 20rem;
         min-height: 100%;
-        background-color: rgba($color-neutral-5,0.8);
+        background-color: rgba($color-neutral-5,0.75);
         padding: 2rem;
         transition: 0.3s all;
         display: flex;
         flex-direction: column;
         scroll-behavior: smooth;
         overflow-y: scroll;
-        border-right: 2px solid $color-neutral-0;
+        border-right: 2px solid $color-neutral-4;
         h1 {
             font-size: 1.4rem;
             margin-top: 0;
             color: $color-neutral-0;
             span {
+                color: $color-neutral-2;
                 margin-left: 0.5rem;
                 text-transform: uppercase;
                 font-weight: 200;
                 font-size: 1rem;
-                border: 1px solid $color-neutral-0;
+                border: 1px solid $color-neutral-2;
                 padding: 0.15rem 0.2rem;
             }
         }
         p {
             line-height: 1.4;
-            color: $color-neutral-0;
+            color: $color-neutral-1;
         }
         ul {
             list-style: none;
 
             margin: 0;
             padding: 0;
-            color: $color-neutral-0;
+            color: $color-accent;
 
             li {
                 display: block;
                 padding: 0.5rem 0;
             }
             li:not(:last-child) {
-                border-bottom: 1px solid $color-neutral-0;
+                border-bottom: 1px solid $color-neutral-4;
             }
         }
 
@@ -216,7 +217,7 @@ body {
         }
         a.download {
             display: block;
-            background-color: $color-neutral-0;
+            background-color: $color-accent;
             text-decoration: none;
             color: $color-neutral-5;
             padding: 0.5rem;
@@ -226,9 +227,9 @@ body {
         a.edit {
             display: block;
             background-color: transparent;
-            border: 2px solid $color-neutral-0;
+            border: 2px solid $color-neutral-2;
             text-decoration: none;
-            color: $color-neutral-0;
+            color: $color-neutral-2;
             padding: 0.5rem;
             text-align: center;
             margin: 0.5rem 0;
@@ -264,4 +265,13 @@ body {
     text-align: center;
     overflow-wrap: normal;
     /* transition: 0.1s; */
+}
+
+.logo img {
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+    width: 150px;
+    height: auto;
+    opacity: 0.25;
 }

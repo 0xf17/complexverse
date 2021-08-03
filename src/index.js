@@ -1,9 +1,9 @@
 import React from 'react';
-import { useMemo, useState, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import './main.scss';
 import icon_Index from './img/index.svg';
 import icon_Close from './img/close.svg';
+import logo from './img/ms_logo.svg';
 import GraphList from './graphlist.json';
 import ForceGraph3D from 'react-force-graph-3d';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
@@ -13,17 +13,58 @@ const extraRenderers = [new CSS2DRenderer()];
 const mat1 = new LineBasicMaterial({ color: "#dcdcdd" });
 const mat2 = new LineBasicMaterial({ color: "#1985A1" });
 
-const node_active = (node) => {
+function map(value, x1, y1, x2, y2) {
+    return (value - x1) * (y2 - x2) / (y1 - x1) + x2;
+}
+
+function distanceVector(v1, v2) {
+    var dx = v1.x - v2.x;
+    var dy = v1.y - v2.y;
+    var dz = v1.z - v2.z;
+
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
+}
+
+function getNode(nodes, id) {
+    return nodes.find(node => node.id === id);
+}
+
+function getLink(links, src_id, dest_id) {
+    return links.find(link =>
+        ((link.source.id === src_id) && (link.target.id === dest_id)) ||
+        ((link.source.id === dest_id) && (link.target.id === src_id)));
+}
+
+function setNodeOpacity(cam, node, nodeEl) {
+    let pos = new Vector3(0, 0, 0);
+
+    if (node.x) {
+        pos = new Vector3(node.x, node.y, node.z);
+    }
+
+    let dist = distanceVector(cam.position, pos);
+
+    let op = map(dist, 500, 0, 0, 1);
+    nodeEl.style.opacity = op;
+}
+
+function getLinkOpacity(cam, link) {
+    let dist = distanceVector(cam.position, link.source.position);
+    return map(dist, 500, 0, 0, 1);
+}
+
+const node_active = (cam, node) => {
     const nodeEl = document.createElement('div');
     nodeEl.textContent = node.name;
     nodeEl.style.fontSize = "1rem";
     nodeEl.style.color = "#ffffff";
     nodeEl.style.background = "#1985A1";
     nodeEl.className = 'node-label';
+    nodeEl.style.zIndex = 1000;
     return new CSS2DObject(nodeEl);
 }
 
-const node_default = (node) => {
+const node_default = (cam, node) => {
     const nodeEl = document.createElement('div')
     nodeEl.textContent = node.name;
     nodeEl.style.color = "#1985A1";
@@ -34,13 +75,12 @@ const node_default = (node) => {
     return new CSS2DObject(nodeEl);
 }
 
-const node_dim = (node) => {
-
+const node_dim = (cam, node) => {
     const nodeEl = document.createElement('div');
     nodeEl.textContent = node.name;
-    nodeEl.style.color = "#969da5";
+    nodeEl.style.color = "#16181a";
     nodeEl.className = 'node-label';
-    // setNodeOpacity(Graph, node, nodeEl);
+    setNodeOpacity(cam, node, nodeEl);
     return new CSS2DObject(nodeEl);
 }
 
@@ -101,13 +141,16 @@ class Details extends React.Component {
     }
 
     render() {
-        const sourceLinks = this.props.currentGraphSourceLinks.map((source) =>
-            <li>{source.title}</li>
-        );
+        var sourceLinks = "", authors = "";
+        if (this.props.meta !== null) {
+            sourceLinks = this.props.meta.sourceLinks.map((source) =>
+                <li>{source.title}</li>
+            );
 
-        const contributors = this.props.currentGraphContributedBy.map((contributor) =>
-            <li>{contributor}</li>
-        );
+            authors = this.props.meta.contributedBy.map((author) =>
+                <li>{author}</li>
+            );
+        }
 
         return (
 
@@ -115,15 +158,15 @@ class Details extends React.Component {
                 transform: this.props.showIndex ? "translate(20rem,0%)" : "translate(0%,0%)",
                 display: this.props.showDetails ? "flex" : "none"
             }}>
-                <h1>{this.props.currentGraphName}<span>{this.props.currentGraphLang}</span></h1>
-                <p>{this.props.currentGraphDescription}</p>
+                <h1>{this.props.meta.name}<span>{this.props.meta.lang}</span></h1>
+                <p>{this.props.meta.description}</p>
                 <h6>Source</h6>
                 <ul>{sourceLinks}</ul>
                 <h6>Contributors</h6>
-                <ul>{contributors}</ul>
+                <ul>{authors}</ul>
                 <div className="spacer"></div>
-                <a className="download" href="{this.props.currentGraphDataSource}">Download graph data</a>
-                <a className="edit" href="{this.props.currentGraphEditLink}">Edit this graph</a>
+                <a className="download" href="{this.props.meta.dataSource}">Download graph data</a>
+                <a className="edit" href="{this.props.meta.editLink}">Edit this graph</a>
             </div>
         );
     }
@@ -132,121 +175,100 @@ class Details extends React.Component {
 class Graph extends React.Component {
     constructor(props) {
         super(props);
-
-        this.getNode = this.getNode.bind(this);
         this.onNodeHover = this.onNodeHover.bind(this);
         this.onLinkHover = this.onLinkHover.bind(this);
-        this.state = {
-            count: 0
-        };
-        // this.update = this.update.bind(this);
-        // this.updateHighlight = this.updateHighlight.bind(this);
+        this.ref = React.createRef();
+
+        this.hoverNode = null;
+        this.highlightNodes = new Set();
+        this.highlightLinks = new Set();
+
+        this.addNodeToHighlighted = this.addNodeToHighlighted.bind(this);
+        this.addLinkToHighlighted = this.addLinkToHighlighted.bind(this);
+        this.resetHighlights = this.resetHighlights.bind(this);
+
+        this.state = { count: 0 };
     }
 
-    getNode(id) {
-        return this.data.nodes.find(node => node.id === id);
+    resetHighlights() {
+        this.hoverNode = null;
+        this.highlightNodes = new Set();
+        this.highlightLinks = new Set();
+    }
+
+    addNodeToHighlighted(node) {
+        this.highlightNodes.add(node);
+    }
+
+    addLinkToHighlighted(link) {
+        this.highlightLinks.add(link);
     }
 
     onNodeHover(node) {
-        if ((!node && !this.highlightNodes.size) || (node && this.hoverNode === node)) return;
+        console.log("entered onNodeHover");
 
-        this.highlightNodes.clear();
-        this.highlightLinks.clear();
+        if ((!node && !this.highlightNodes.size) || (node && this.hoverNode === node)) return;
+        this.resetHighlights();
+
         if (node) {
-            this.highlightNodes.add(node);
-            node.neighbors.forEach(neighbor => this.highlightNodes.add(neighbor));
-            node.links.forEach(link => this.highlightLinks.add(link));
+            this.addNodeToHighlighted(node);
+            for (let neighbor of node.neighbors) {
+                console.log("Added " + neighbor + " to highlight");
+                this.addNodeToHighlighted(getNode(this.props.data.nodes, neighbor));
+                this.addLinkToHighlighted(getLink(this.props.data.links, node.id, neighbor));
+            }
         }
 
         this.hoverNode = node || null;
-        // this.updateHighlight();
-
-        if (this.hoverNode) {
-            console.log("hovering " + this.hoverNode.id);
-        }
 
         this.setState({ count: this.state.count + 1 });
-
     }
 
     onLinkHover(link) {
-        this.highlightNodes.clear();
-        this.highlightLinks.clear();
+        console.log("entered onLinkHover");
+        this.resetHighlights();
 
         if (link) {
-            this.highlightLinks.add(link);
-            this.highlightNodes.add(link.source);
-            this.highlightNodes.add(link.target);
+            this.addLinkToHighlighted(link);
+            this.addNodeToHighlighted(link.source);
+            this.addNodeToHighlighted(link.target);
         }
 
-        this.ref = React.createRef();
         this.setState({ count: this.state.count + 1 });
-        // this.updateHighlight();
     }
 
-    // updateHighlight() {
-    //     this.setState({ 
-    //         highlightNodes: this.highlightNodes, 
-    //         highlightLinks: this.highlightLinks 
-    //     });
-    // }
+    componentDidMount() {
+        let Graph = this.ref.current;
 
-    // update() {
-    //     this.ref.scene().fog = new FogExp2("#fff", 0.0015);
-    // }
+        // let scene = Graph.scene();
+        // scene.fog = new FogExp2("#fff", 0.0015);
+
+        Graph.controls().addEventListener('change', Graph.refresh);
+    }
 
     render() {
+        let obj = (<div className="graph">
+            <ForceGraph3D
+                ref={this.ref}
+                extraRenderers={extraRenderers}
+                graphData={this.props.data}
+                backgroundColor={"rgb(255,255,255)"}
+                showNavInfo={false}
+                linkWidth={1}
+                nodeRelSize={5}
+                nodeResolution={8}
+                nodeOpacity={0}
+                linkOpacity={link => getLinkOpacity(this.ref.current.camera(), link)}
+                linkMaterial={link => this.highlightLinks.has(link) ? mat2 : mat1}
+                linkCurvature={0.05}
+                nodeThreeObject={node => this.highlightNodes.has(node) ? node === this.hoverNode ? node_active(this.ref.current.camera(), node) : node_default(this.ref.current.camera(), node) : node_dim(this.ref.current.camera(), node)}
+                nodeThreeObjectExtend={true}
+                onNodeHover={this.onNodeHover}
+                onLinkHover={this.onLinkHover}
+            />
+        </div>);
 
-        if (this.state.count == 0) {
-            this.data = {
-                nodes: this.props.currentGraphNodes,
-                links: this.props.currentGraphLinks
-            };
-
-            this.highlightNodes = new Set();
-            this.highlightLinks = new Set();
-            this.hoverNode = null;
-
-            // cross-link node objects
-            this.data.links.forEach(link => {
-                const a = this.getNode(link.source);
-                const b = this.getNode(link.target);
-                !a.neighbors && (a.neighbors = []);
-                !b.neighbors && (b.neighbors = []);
-                a.neighbors.push(b);
-                b.neighbors.push(a);
-
-                !a.links && (a.links = []);
-                !b.links && (b.links = []);
-                a.links.push(link);
-                b.links.push(link);
-            });
-        }
-        // console.log(this.data);
-
-        return (
-            <div className="graph">
-                <ForceGraph3D
-                    extraRenderers={extraRenderers}
-                    graphData={this.data}
-                    backgroundColor={"rgb(255,255,255)"}
-                    showNavInfo={false}
-                    linkWidth={1}
-                    nodeRelSize={5}
-                    nodeResolution={8}
-                    nodeOpacity={0}
-                    autoPauseRedraw={true}
-                    linkOpacity={1}
-                    linkMaterial={link => this.highlightLinks.has(link) ? mat2 : mat1}
-                    linkCurvature={0.05}
-                    // nodeCanvasObjectMode={node => this.highlightNodes.has(node) ? 'before' : undefined}
-                    nodeThreeObject={node => this.highlightNodes.has(node) ? node === this.hoverNode ? node_active(node) : node_default(node) : node_dim(node)}
-                    nodeThreeObjectExtend={true}
-                    onNodeHover={this.onNodeHover}
-                    onLinkHover={this.onLinkHover}
-                />
-            </div>
-        );
+        return obj;
     }
 }
 
@@ -262,21 +284,26 @@ class Body extends React.Component {
                     <Details
                         showIndex={this.props.showIndex}
                         showDetails={this.props.showDetails}
-                        currentGraphID={this.props.currentGraphID}
-                        currentGraphName={this.props.currentGraphName}
-                        currentGraphLang={this.props.currentGraphLang}
-                        currentGraphDescription={this.props.currentGraphDescription}
-                        currentGraphSourceLinks={this.props.currentGraphSourceLinks}
-                        currentGraphContributedBy={this.props.currentGraphContributedBy}
-                        currentGraphDataSource={this.props.currentGraphDataSource}
-                        currentGraphEditLink={this.props.currentGraphEditLink}
+                        meta={this.props.G.meta}
                     />
                 </div>
                 <Graph
-                    currentGraphNodes={this.props.currentGraphNodes}
-                    currentGraphLinks={this.props.currentGraphLinks}
+                    data={this.props.G.data}
                 />
             </div>
+        );
+    }
+}
+
+class Logo extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <a className="logo" href="https://mathscapes.xyz">
+                <img src={logo} alt="Mathscapes" />
+            </a>
         );
     }
 }
@@ -287,19 +314,11 @@ class App extends React.Component {
         this.state = {
             showIndex: false,
             showDetails: false,
-            currentGraphID: 0,
-            currentGraphName: "",
-            currentGraphLang: "",
-            currentGraphDescription: "",
-            currentGraphSourceLinks: [],
-            currentGraphContributedBy: [],
-            currentGraphDataSource: "",
-            currentGraphEditLink: "",
-            currentGraphNodes: [],
-            currentGraphLinks: []
+            G: { meta: { sourceLinks: [], contributedBy: [] }, data: { nodes: [], links: [] } }
         };
         this.toggleIndex = this.toggleIndex.bind(this);
         this.selectGraph = this.selectGraph.bind(this);
+        this._G = null;
     }
 
     toggleIndex(e) {
@@ -307,41 +326,28 @@ class App extends React.Component {
     }
 
     selectGraph(id) {
-        this.setState({ currentGraphID: id });
-        this.setState({ showDetails: true });
-        const G = require(`./data/${id}.json`);
+        this._G = require(`./data/${id}.json`);;
+
         this.setState({
-            currentGraphName: G.meta.name,
-            currentGraphLang: G.meta.lang,
-            currentGraphDescription: G.meta.description,
-            currentGraphSourceLinks: G.meta.sourceLinks,
-            currentGraphContributedBy: G.meta.contributedBy,
-            currentGraphDataSource: G.meta.dataSource,
-            currentGraphEditLink: G.meta.editLink,
-            currentGraphNodes: G.graph.nodes,
-            currentGraphLinks: G.graph.links
+            showDetails: true,
+            G: this._G
         });
     }
 
     render() {
         return (
             <div>
-                <Head icon={this.state.showIndex ? icon_Close : icon_Index} toggleHandler={this.toggleIndex} />
+                <Head
+                    icon={this.state.showIndex ? icon_Close : icon_Index}
+                    toggleHandler={this.toggleIndex}
+                />
                 <Body
                     showIndex={this.state.showIndex}
                     showDetails={this.state.showDetails}
                     selectHandler={this.selectGraph}
-                    currentGraphID={this.state.currentGraphID}
-                    currentGraphName={this.state.currentGraphName}
-                    currentGraphLang={this.state.currentGraphLang}
-                    currentGraphDescription={this.state.currentGraphDescription}
-                    currentGraphSourceLinks={this.state.currentGraphSourceLinks}
-                    currentGraphContributedBy={this.state.currentGraphContributedBy}
-                    currentGraphDataSource={this.state.currentGraphDataSource}
-                    currentGraphEditLink={this.state.currentGraphEditLink}
-                    currentGraphNodes={this.state.currentGraphNodes}
-                    currentGraphLinks={this.state.currentGraphLinks}
+                    G={this.state.G}
                 />
+                <Logo />
             </div>
         );
     }

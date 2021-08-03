@@ -1,0 +1,195 @@
+{
+    "meta": {
+        "name" : "Srishti Organogram",
+        "lang"  : "en",
+        "description" : "Srishti Manipal Institute of Art, Design and Technology, formerly known as Srishti Institute of Art, Design & Technology (Srishti), is a multi-disciplinary approach design school established in 1996 by Geeta Narayanan under the Ujwal Trust in Bangalore, India. It offers design education in Digital Video Production, Film, Visual Communication, Experimental Media Arts, Design in Education, Textile Design, Animation and Visual Effects, Interaction Design, Product and Interface Design, Furniture and Spatial Design, and Business Systems and Design. As of April 2020, Srishti is a part of Manipal Academy of Higher Education (MAHE) and will be shifted to the Yelahanka campus.",
+        "sourceLinks" : [ 
+            { "title": "Srishti's Official Website", "url": "http://www.srishtimanipalinstitute.in/" },
+            { "title": "Wikipedia", "url": "https://en.wikipedia.org/wiki/Srishti_Institute_of_Art_Design_and_Technology" }
+
+        ],
+        "contributedBy": [
+            "0xf17"
+        ],
+        "dataSource": "#",
+        "editLink": "#"
+    },
+    "graph": {
+        "nodes": [
+            { "id": 0, "name": "MAHE" },
+            { "id": 1, "name": "Srishti(M)" },
+            { "id": 2, "name": "Director" },
+            { "id": 3, "name": "Secretariat" },
+            { "id": 4, "name": "Managing Council" },
+            { "id": 5, "name": "Academic Ops" },
+
+            { "id": 3.1, "name": "/" },
+            { "id": 3.2, "name": "/" },
+
+            { "id": 3.11, "name": "UGVP Sec" },
+            { "id": 3.12, "name": "UGPP Sec" },
+            { "id": 3.13, "name": "PG Sec" },
+
+            { "id": 3.21, "name": "Finance" },
+            { "id": 3.22, "name": "Campus" },
+            { "id": 3.23, "name": "Marketing" },
+            { "id": 3.24, "name": "Library/KM" },
+            { "id": 3.25, "name": "IT" },
+
+            { "id": 4.1, "name": "Board" },
+            { "id": 4.2, "name": "Academic Standards" },
+
+            { "id": 4.21, "name": "Students" },
+            { "id": 4.22, "name": "UGVP" },
+            { "id": 4.23, "name": "UGPP" },
+            { "id": 4.24, "name": "PG" },
+            { "id": 4.25, "name": "Doc." },
+
+            { "id": 4.211, "name": "Wellness" },
+            { "id": 4.212, "name": "Support" },
+
+            { "id": 4.26, "name": "Research & Collaboration" },
+            { "id": 4.27, "name": "Centers & Labs" },
+
+            { "id": 5.1, "name": "Fields of Practice" },
+            { "id": 5.11, "name": "Skill-based/Vocational Programs" },
+            { "id": 5.12, "name": "New Learner Pedagogies & Processes" },
+            { "id": 5.13, "name": "Advanced Studies & Practice" },
+            { "id": 5.14, "name": "Continuing Professional Development" },
+
+            { "id": 5.2, "name": "/" },
+
+            { "id": 5.21, "name": "Labs & Ateliers" },
+            { "id": 5.22, "name": "Holistic Education" },
+            { "id": 5.23, "name": "General Studies" },
+
+            { "id": 4.261, "name": "Creative Ecosystems" },
+            { "id": 4.2611, "name": "Media Arts and Sciences" },
+            { "id": 4.2612, "name": "Economic Sectors, Industries and Enterprise" },
+            { "id": 4.2613, "name": "New Humanities" },
+            { "id": 4.2614, "name": "Interaction Design" },
+
+            { "id": 5.211, "name": "Frugal Design Lab" },
+            { "id": 5.212, "name": "LeNS Lab" },
+            { "id": 5.213, "name": "Natural Fibres Lab" },
+            { "id": 5.214, "name": "Srishti Labs (S.Labs)" },
+            { "id": 5.215, "name": "Story Lab" },
+            { "id": 5.216, "name": "Documentary Film Lab" },
+
+            { "id": 4.262, "name": "Centers" },
+            { "id": 4.2621, "name": "CEMA" },
+            { "id": 4.2622, "name": "CPH" },
+            { "id": 4.2623, "name": "CERTAD" },
+            { "id": 4.2624, "name": "Odde" },
+            { "id": 4.2625, "name": "Upaaya" },
+
+            { "id": 4.263, "name": "Open Platforms" },
+            { "id": 4.2631, "name": "Art in Transit" },
+            { "id": 4.2632, "name": "Blank Noise" },
+            { "id": 4.2633, "name": "Impact Edge" },
+            { "id": 4.2634, "name": "The Kabir Project" },
+            { "id": 4.2635, "name": "Srishti Films" },
+            { "id": 4.2636, "name": "UNESCO Chair" },
+            { "id": 4.2637, "name": "(Art)Science BLR" },
+
+            { "id": 4.264, "name": "Professional Practice" },
+            { "id": 4.2641, "name": "Design Principals" },
+            { "id": 4.2642, "name": "Scholars-in-Residence" },
+            { "id": 4.2643, "name": "Artists-in-Residence" },
+
+            { "id": 4.265, "name": "Initiatives" },
+            { "id": 4.2651, "name": "Bangalore Human Sciences Initiative" }
+
+
+        ],
+        "links": [
+            { "source": 0, "target": 1 },
+            { "source": 1, "target": 2 },
+            { "source": 2, "target": 3 },
+            { "source": 2, "target": 4 },
+            { "source": 2, "target": 5 },
+
+            { "source": 3, "target": 3.1 },
+            { "source": 3, "target": 3.2 },
+
+            { "source": 3.1, "target": 3.11 },
+            { "source": 3.1, "target": 3.12 },
+            { "source": 3.1, "target": 3.13 },
+
+            { "source": 3.2, "target": 3.21 },
+            { "source": 3.2, "target": 3.22 },
+            { "source": 3.2, "target": 3.23 },
+            { "source": 3.2, "target": 3.24 },
+            { "source": 3.2, "target": 3.25 },
+
+            { "source": 2, "target": 4.1 },
+            { "source": 3, "target": 4 },
+
+            { "source": 4, "target": 4.1 },
+            { "source": 4, "target": 4.2 },
+
+            { "source": 4.2, "target": 4.21 },
+            { "source": 4.2, "target": 4.22 },
+            { "source": 4.2, "target": 4.23 },
+            { "source": 4.2, "target": 4.24 },
+            { "source": 4.2, "target": 4.25 },
+
+            { "source": 4.21, "target": 4.211 },
+            { "source": 4.211, "target": 3 },
+            { "source": 4.211, "target": 4.212 },
+
+            { "source": 4.24, "target": 4.26 },
+            { "source": 4.25, "target": 4.26 },
+            { "source": 4.26, "target": 4.27 },
+
+            { "source": 5, "target": 5.1 },
+            { "source": 5.1, "target": 5.11 },
+            { "source": 5.1, "target": 5.12 },
+            { "source": 5.1, "target": 5.13 },
+            { "source": 5.1, "target": 5.14 },
+
+            { "source": 5, "target": 5.2 },
+            { "source": 5.2, "target": 5.21 },
+            { "source": 5.2, "target": 5.22 },
+            { "source": 5.2, "target": 5.23 },
+
+            { "source": 4.26, "target": 4.261 },
+            { "source": 4.261, "target": 4.2611 },
+            { "source": 4.261, "target": 4.2612 },
+            { "source": 4.261, "target": 4.2613 },
+            { "source": 4.261, "target": 4.2614 },
+
+            { "source": 5.21, "target": 4.26 },
+            { "source": 5.21, "target": 5.211 },
+            { "source": 5.21, "target": 5.212 },
+            { "source": 5.21, "target": 5.213 },
+            { "source": 5.21, "target": 5.214 },
+            { "source": 5.21, "target": 5.215 },
+            { "source": 5.21, "target": 5.216 },
+
+            { "source": 4.26, "target": 4.262 },
+            { "source": 4.262, "target": 4.2621 },
+            { "source": 4.262, "target": 4.2622 },
+            { "source": 4.262, "target": 4.2623 },
+            { "source": 4.262, "target": 4.2624 },
+            { "source": 4.262, "target": 4.2625 },
+
+            { "source": 4.26, "target": 4.263 },
+            { "source": 4.263, "target": 4.2631 },
+            { "source": 4.263, "target": 4.2632 },
+            { "source": 4.263, "target": 4.2633 },
+            { "source": 4.263, "target": 4.2634 },
+            { "source": 4.263, "target": 4.2635 },
+            { "source": 4.263, "target": 4.2636 },
+            { "source": 4.263, "target": 4.2637 },
+
+            { "source": 4.26, "target": 4.264 },
+            { "source": 4.264, "target": 4.2641 },
+            { "source": 4.264, "target": 4.2642 },
+            { "source": 4.264, "target": 4.2643 },
+
+            { "source": 4.26, "target": 4.265 },
+            { "source": 4.265, "target": 4.2651 }
+        ]
+    }
+}
