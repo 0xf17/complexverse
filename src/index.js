@@ -7,7 +7,7 @@ import logo from './img/ms_logo.svg';
 import GraphList from './graphlist.json';
 import ForceGraph3D from 'react-force-graph-3d';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
-import { Vector3, LineBasicMaterial, FogExp2 } from 'three';
+import { Vector3, LineBasicMaterial } from 'three';
 
 const extraRenderers = [new CSS2DRenderer()];
 const mat1 = new LineBasicMaterial({ color: "#dcdcdd" });
@@ -48,11 +48,6 @@ function setNodeOpacity(cam, node, nodeEl) {
     nodeEl.style.opacity = op;
 }
 
-function getLinkOpacity(cam, link) {
-    let dist = distanceVector(cam.position, link.source.position);
-    return map(dist, 500, 0, 0, 1);
-}
-
 const node_active = (cam, node) => {
     const nodeEl = document.createElement('div');
     nodeEl.textContent = node.name;
@@ -78,6 +73,7 @@ const node_dim = (cam, node) => {
 class Head extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {};
     }
 
     render() {
@@ -85,46 +81,31 @@ class Head extends React.Component {
             <div className="head">
                 <div className="left">
                     <div className="toggle" onClick={this.props.toggleHandler}>
-                        <img src={this.props.icon} />
+                        <img src={this.props.icon} alt="toggle" />
                     </div>
                     <a className="logo" href="/">
                         Complexverse
                     </a>
                 </div>
                 <div className="right">
-                    <a href="#">Contribute</a>
-                    <a href="#">About Complexverse</a>
-                    <a href="#" className="opacity-50">v0.1.0</a>
+                    <a href="github.com/mathscapes">Contribute</a>
+                    <a href="github.com/mathscapes">About Complexverse</a>
+                    <a href="github.com/mathscapes" className="opacity-50">v0.1.0</a>
                 </div>
             </div>
         );
     }
 }
 
-class EngineControls extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <div className="engine-controls">
-                <select id="cars" name="cars" onChange={this.props.engineHandler}>
-                    <option value={false}>false</option>
-                    <option value={true}>true</option>
-                </select>
-            </div>
-        );
-    }
-}
 class Index extends React.Component {
     constructor(props) {
         super(props);
         this.search = this.search.bind(this);
+        this.state = {};
     }
 
     search() {
-        var input, filter, p, name;
+        var input, filter, name;
         input = document.getElementById("searchbox");
         console.log(input.value);
         filter = input.value.toUpperCase();
@@ -148,7 +129,7 @@ class Index extends React.Component {
                 <input type="text" id="searchbox" className="search" onKeyUp={this.search} placeholder="Search.." />
                 {
                     GraphList.map(graph => (
-                        <a key={graph.id} className="graph-link" href="#" onClick={() => this.props.selectHandler(graph.id)}>{graph.name} <span>{graph.lang}</span></a>
+                        <button key={graph.id} className="graph-link" onClick={() => this.props.selectHandler(graph.id)}>{graph.name} <span>{graph.lang}</span></button>
                     ))
                 }
             </div>
@@ -159,17 +140,18 @@ class Index extends React.Component {
 class Details extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {};
     }
 
     render() {
         var sourceLinks = "", authors = "";
         if (this.props.meta !== null) {
             sourceLinks = this.props.meta.sourceLinks.map((source) =>
-                <li><a href={source.url}>{source.title}</a></li>
+                <li><a key={source.url} href={source.url}>{source.title}</a></li>
             );
 
             authors = this.props.meta.contributedBy.map((author) =>
-                <li><a href={"github.com/" + author}>{author}</a></li>
+                <li><a key={author} href={"github.com/" + author}>{author}</a></li>
             );
         }
 
@@ -201,8 +183,8 @@ class Details extends React.Component {
 class Graph extends React.Component {
     constructor(props) {
         super(props);
-        this.onNodeHover = this.onNodeHover.bind(this);
-        this.onLinkHover = this.onLinkHover.bind(this);
+        this.onNodeClick = this.onNodeClick.bind(this);
+        this.onLinkClick = this.onLinkClick.bind(this);
         this.ref = React.createRef();
 
         this.hoverNode = null;
@@ -230,8 +212,8 @@ class Graph extends React.Component {
         this.highlightLinks.add(link);
     }
 
-    onNodeHover(node) {
-        // console.log("entered onNodeHover");
+    onNodeClick(node) {
+        // console.log("entered onNodeClick");
 
         if ((!node && !this.highlightNodes.size) || (node && this.hoverNode === node)) return;
         this.resetHighlights();
@@ -250,8 +232,8 @@ class Graph extends React.Component {
         this.setState({ count: this.state.count + 1 });
     }
 
-    onLinkHover(link) {
-        // console.log("entered onLinkHover");
+    onLinkClick(link) {
+        // console.log("entered onLinkClick");
         this.resetHighlights();
 
         if (link) {
@@ -265,17 +247,18 @@ class Graph extends React.Component {
 
     componentDidMount() {
         let Graph = this.ref.current;
-
-        // let scene = Graph.scene();
-        // scene.fog = new FogExp2("#fff", 0.0015);
-        // Graph.pauseAnimation();
         Graph.controls().addEventListener('change', Graph.refresh);
-        console.log(this.ref.current.renderer().info.render);
+
+    }
+
+    componentWillUnmount() {
+        let Graph = this.ref.current;
+        document.removeEventListener('change', Graph.controls());
     }
 
     render() {
-        let obj = (
-            <div className="graph">
+        return (
+            <div className="graph" >
                 <ForceGraph3D
                     ref={this.ref}
                     rendererConfig={{ powerPreference: "low-power", alpha: true }}
@@ -293,18 +276,18 @@ class Graph extends React.Component {
                     linkCurvature={0.025}
                     nodeThreeObject={node => this.highlightNodes.has(node) ? node === this.hoverNode ? node_active(this.ref.current.camera(), node) : node_default(this.ref.current.camera(), node) : node_dim(this.ref.current.camera(), node)}
                     nodeThreeObjectExtend={true}
-                    onNodeHover={this.onNodeHover}
-                    onLinkHover={this.onLinkHover}
+                    onNodeClick={this.onNodeClick}
+                    onLinkClick={this.onLinkClick}
                 />
-            </div>);
-
-        return obj;
+            </div>
+        );
     }
 }
 
 class Body extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {};
     }
     render() {
         return (
@@ -328,6 +311,7 @@ class Body extends React.Component {
 class Logo extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {};
     }
     render() {
         return (
