@@ -1,6 +1,6 @@
 ABOUT COMPLEXVERSE
 ------------------
-
+Complexverse is a project by Mathscapes to archive and serve as a educational tool to capture tacit knowledge without spending much time in codifying the hidden relationships. Complexverse is open for anyone to contribute.
 
 CONTRIBUTOR GUIDE
 -----------------
@@ -9,8 +9,7 @@ CONTRIBUTOR GUIDE
 3 Fix the bug
 4 Implement a new feature
 5 Propose a new graph
-6 Suggest changes in a existing graph
-7 Edit a existing graph
+6 Suggest/edit changes in a existing graph
 
 1 Report a bug
 - Scan through the ISSUES tab to find if your bug is already in our list. If not, create a new ISSUE with `Bug` label.
@@ -37,10 +36,12 @@ CONTRIBUTOR GUIDE
 - If not or if you miss the T hours to respond, the issue will be unassigned, so a new member may take it up.
 
 5 Propose a new graph
-- TBA
+- Scan through the ISSUES tab to find if your proposal is already in our list. If not, create a new ISSUE with `Graph Request` label.
+- Include initial graph data for review.
 
 6 Suggest changes in a existing graph
-- TBA
-
-7 Edit a existing graph
-- TBA
+- Fork this repo.
+- Edit your change in the raw/xxx.json.
+- Compile neighbors with complexer.
+- Copy compiled graph into data/.
+- Copy graph information graph list.
