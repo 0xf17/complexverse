@@ -56,29 +56,20 @@ function getLinkOpacity(cam, link) {
 const node_active = (cam, node) => {
     const nodeEl = document.createElement('div');
     nodeEl.textContent = node.name;
-    nodeEl.style.fontSize = "1rem";
-    nodeEl.style.color = "#ffffff";
-    nodeEl.style.background = "#1985A1";
-    nodeEl.className = 'node-label';
-    nodeEl.style.zIndex = 1000;
+    nodeEl.className = 'node-label active';
     return new CSS2DObject(nodeEl);
 }
 
 const node_default = (cam, node) => {
     const nodeEl = document.createElement('div')
     nodeEl.textContent = node.name;
-    nodeEl.style.color = "#1985A1";
-    nodeEl.style.border = "1px solid #1985A1";
-    nodeEl.style.background = "rgba(255,255,255,1)";
-    nodeEl.className = 'node-label';
-
+    nodeEl.className = 'node-label default';
     return new CSS2DObject(nodeEl);
 }
 
 const node_dim = (cam, node) => {
     const nodeEl = document.createElement('div');
     nodeEl.textContent = node.name;
-    nodeEl.style.color = "#16181a";
     nodeEl.className = 'node-label';
     setNodeOpacity(cam, node, nodeEl);
     return new CSS2DObject(nodeEl);
@@ -96,27 +87,57 @@ class Head extends React.Component {
                     <div className="toggle" onClick={this.props.toggleHandler}>
                         <img src={this.props.icon} />
                     </div>
-                    <div className="logo">
-                        Complexverse <span>(Cubozoa Build)</span>
-                    </div>
+                    <a className="logo" href="/">
+                        Complexverse
+                    </a>
                 </div>
                 <div className="right">
                     <a href="#">Contribute</a>
-                    <a href="#">About</a>
+                    <a href="#">About Complexverse</a>
+                    <a href="#" className="opacity-50">v0.1.0</a>
                 </div>
             </div>
         );
     }
 }
 
+class EngineControls extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <div className="engine-controls">
+                <select id="cars" name="cars" onChange={this.props.engineHandler}>
+                    <option value={false}>false</option>
+                    <option value={true}>true</option>
+                </select>
+            </div>
+        );
+    }
+}
 class Index extends React.Component {
     constructor(props) {
         super(props);
         this.search = this.search.bind(this);
     }
 
-    search(query) {
-
+    search() {
+        var input, filter, p, name;
+        input = document.getElementById("searchbox");
+        console.log(input.value);
+        filter = input.value.toUpperCase();
+        let links = document.getElementsByClassName("graph-link");
+        for (let i = 0; i < links.length; i++) {
+            let a = links[i];
+            name = a.innerText;
+            if (name.toUpperCase().indexOf(filter) > -1) {
+                a.style.display = "";
+            } else {
+                a.style.display = "none";
+            }
+        }
     }
 
     render() {
@@ -124,10 +145,10 @@ class Index extends React.Component {
             <div className='index' style={{
                 transform: this.props.showIndex ? "translate(0%,0%)" : "translate(-100%,0%)"
             }}>
-                <input type="text" class="search" onkeyup="this.search()" placeholder="Search.." />
+                <input type="text" id="searchbox" className="search" onKeyUp={this.search} placeholder="Search.." />
                 {
                     GraphList.map(graph => (
-                        <a key={graph.id} href="#" onClick={() => this.props.selectHandler(graph.id)}>{graph.name} <span>{graph.lang}</span></a>
+                        <a key={graph.id} className="graph-link" href="#" onClick={() => this.props.selectHandler(graph.id)}>{graph.name} <span>{graph.lang}</span></a>
                     ))
                 }
             </div>
@@ -144,11 +165,11 @@ class Details extends React.Component {
         var sourceLinks = "", authors = "";
         if (this.props.meta !== null) {
             sourceLinks = this.props.meta.sourceLinks.map((source) =>
-                <li>{source.title}</li>
+                <li><a href={source.url}>{source.title}</a></li>
             );
 
             authors = this.props.meta.contributedBy.map((author) =>
-                <li>{author}</li>
+                <li><a href={"github.com/" + author}>{author}</a></li>
             );
         }
 
@@ -160,13 +181,18 @@ class Details extends React.Component {
             }}>
                 <h1>{this.props.meta.name}<span>{this.props.meta.lang}</span></h1>
                 <p>{this.props.meta.description}</p>
+
                 <h6>Source</h6>
                 <ul>{sourceLinks}</ul>
                 <h6>Contributors</h6>
                 <ul>{authors}</ul>
-                <div className="spacer"></div>
-                <a className="download" href="{this.props.meta.dataSource}">Download graph data</a>
-                <a className="edit" href="{this.props.meta.editLink}">Edit this graph</a>
+                {/* <div className="spacer"></div> */}
+                <h6>Graph Actions</h6>
+                <div className="actions">
+                    <a className="download" href="{this.props.meta.dataSource}">Download</a>
+                    <a className="edit" href="{this.props.meta.editLink}">Edit on GH</a>
+                </div>
+
             </div>
         );
     }
@@ -205,7 +231,7 @@ class Graph extends React.Component {
     }
 
     onNodeHover(node) {
-        console.log("entered onNodeHover");
+        // console.log("entered onNodeHover");
 
         if ((!node && !this.highlightNodes.size) || (node && this.hoverNode === node)) return;
         this.resetHighlights();
@@ -213,7 +239,7 @@ class Graph extends React.Component {
         if (node) {
             this.addNodeToHighlighted(node);
             for (let neighbor of node.neighbors) {
-                console.log("Added " + neighbor + " to highlight");
+                // console.log("Added " + neighbor + " to highlight");
                 this.addNodeToHighlighted(getNode(this.props.data.nodes, neighbor));
                 this.addLinkToHighlighted(getLink(this.props.data.links, node.id, neighbor));
             }
@@ -225,7 +251,7 @@ class Graph extends React.Component {
     }
 
     onLinkHover(link) {
-        console.log("entered onLinkHover");
+        // console.log("entered onLinkHover");
         this.resetHighlights();
 
         if (link) {
@@ -242,31 +268,35 @@ class Graph extends React.Component {
 
         // let scene = Graph.scene();
         // scene.fog = new FogExp2("#fff", 0.0015);
-
+        // Graph.pauseAnimation();
         Graph.controls().addEventListener('change', Graph.refresh);
+        console.log(this.ref.current.renderer().info.render);
     }
 
     render() {
-        let obj = (<div className="graph">
-            <ForceGraph3D
-                ref={this.ref}
-                extraRenderers={extraRenderers}
-                graphData={this.props.data}
-                backgroundColor={"rgb(255,255,255)"}
-                showNavInfo={false}
-                linkWidth={1}
-                nodeRelSize={5}
-                nodeResolution={8}
-                nodeOpacity={0}
-                linkOpacity={link => getLinkOpacity(this.ref.current.camera(), link)}
-                linkMaterial={link => this.highlightLinks.has(link) ? mat2 : mat1}
-                linkCurvature={0.05}
-                nodeThreeObject={node => this.highlightNodes.has(node) ? node === this.hoverNode ? node_active(this.ref.current.camera(), node) : node_default(this.ref.current.camera(), node) : node_dim(this.ref.current.camera(), node)}
-                nodeThreeObjectExtend={true}
-                onNodeHover={this.onNodeHover}
-                onLinkHover={this.onLinkHover}
-            />
-        </div>);
+        let obj = (
+            <div className="graph">
+                <ForceGraph3D
+                    ref={this.ref}
+                    rendererConfig={{ powerPreference: "low-power", alpha: true }}
+                    extraRenderers={extraRenderers}
+                    graphData={this.props.data}
+                    backgroundColor={"rgba(0,0,0,0)"}
+                    showNavInfo={false}
+                    linkWidth={0.5}
+                    warmupTicks={1000}
+                    cooldownTime={3000}
+                    nodeRelSize={5}
+                    nodeResolution={2}
+                    nodeOpacity={0}
+                    linkMaterial={link => this.highlightLinks.has(link) ? mat2 : mat1}
+                    linkCurvature={0.025}
+                    nodeThreeObject={node => this.highlightNodes.has(node) ? node === this.hoverNode ? node_active(this.ref.current.camera(), node) : node_default(this.ref.current.camera(), node) : node_dim(this.ref.current.camera(), node)}
+                    nodeThreeObjectExtend={true}
+                    onNodeHover={this.onNodeHover}
+                    onLinkHover={this.onLinkHover}
+                />
+            </div>);
 
         return obj;
     }
@@ -278,7 +308,7 @@ class Body extends React.Component {
     }
     render() {
         return (
-            <div className="body">
+            <div className="body" id="body">
                 <div className="pane">
                     <Index showIndex={this.props.showIndex} selectHandler={this.props.selectHandler} />
                     <Details
@@ -314,7 +344,9 @@ class App extends React.Component {
         this.state = {
             showIndex: false,
             showDetails: false,
-            G: { meta: { sourceLinks: [], contributedBy: [] }, data: { nodes: [], links: [] } }
+            G: { meta: { sourceLinks: [], contributedBy: [] }, data: { nodes: [], links: [] } },
+            value: false,
+            G_id: null
         };
         this.toggleIndex = this.toggleIndex.bind(this);
         this.selectGraph = this.selectGraph.bind(this);
@@ -326,12 +358,21 @@ class App extends React.Component {
     }
 
     selectGraph(id) {
-        this._G = require(`./data/${id}.json`);;
+        if (this.state.G_id !== id) {
+            // ReactDOM.unmountComponentAtNode(document.getElementById('root'));
+            this._G = require(`./data/${id}.json`);;
 
-        this.setState({
-            showDetails: true,
-            G: this._G
-        });
+            this.setState({
+                G_id: id,
+                showDetails: true,
+                G: this._G
+            });
+
+        }
+    }
+
+    engineHandler(e) {
+        this.setState({ value: e.target.value });
     }
 
     render() {
@@ -346,6 +387,7 @@ class App extends React.Component {
                     showDetails={this.state.showDetails}
                     selectHandler={this.selectGraph}
                     G={this.state.G}
+                    value={this.state.value}
                 />
                 <Logo />
             </div>
