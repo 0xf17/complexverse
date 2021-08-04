@@ -1,0 +1,46 @@
+ABOUT COMPLEXVERSE
+------------------
+
+
+CONTRIBUTOR GUIDE
+-----------------
+1 Report a bug
+2 Suggest a new feature
+3 Fix the bug
+4 Implement a new feature
+5 Propose a new graph
+6 Suggest changes in a existing graph
+7 Edit a existing graph
+
+1 Report a bug
+- Scan through the ISSUES tab to find if your bug is already in our list. If not, create a new ISSUE with `Bug` label.
+- The bug will be reviewed by Mathscapes team and will be escalated into our roadmap if found valid.
+
+2 Suggest a new feature
+- Scan through the ISSUES tab to find if your suggestion is already in our list. If not, create a new ISSUE with `Feature Request` label.
+- The feature will be reviewed by Mathscapes team and if it makes sense into our planned roadmap for Complexverse, will be opened for community voting.
+
+3 Fix the bug
+- Identify the bug from the ISSUES tab.
+- Inform in the same thread that you want to fix the bug, and assign the issue to yourself.
+- You will remain assigned for next T hours (default = 24 hours) to respond with a PR.
+- Fork this repo, and fix the bug. Sendback the PR.
+- Your PR will be reviewed by Mathscapes team and will be merged if found valid.
+- If not or if you miss the T hours to respond, the issue will be unassigned, so a new member may take it up.
+
+4 Implement a new feature
+- Identify the feature with label `Accepted for development` from the ISSUES tab.
+- Inform in the same thread for the new feature, and assign the issue to yourself.
+- You will remain assigned for next T hours (default = 24 hours) to respond with a PR.
+- Fork this repo, and implement the feature. Sendback the PR.
+- Your PR will be reviewed by Mathscapes team and will be merged if found valid.
+- If not or if you miss the T hours to respond, the issue will be unassigned, so a new member may take it up.
+
+5 Propose a new graph
+- TBA
+
+6 Suggest changes in a existing graph
+- TBA
+
+7 Edit a existing graph
+- TBA
